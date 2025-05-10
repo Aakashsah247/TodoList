@@ -1,0 +1,98 @@
+{% extends 'todo/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="todo-card shadow p-4">
+                <div class="text-center mb-4">
+                    <i class="fas fa-edit fa-3x text-warning mb-3"></i>
+                    <h2 class="mb-2">Edit Task</h2>
+                    <p class="text-muted">Update your task details</p>
+                </div>
+
+                <form method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="id_title" class="form-label fw-bold">Task Title</label>
+                        <input type="text" 
+                               class="form-control form-control-lg" 
+                               id="id_title" 
+                               name="title" 
+                               value="{{ form.title.value|default:'' }}" 
+                               required>
+                        <div class="invalid-feedback">
+                            Task title is required.
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_content" class="form-label fw-bold">Description</label>
+                        <textarea class="form-control" 
+                                  id="id_content" 
+                                  name="content" 
+                                  rows="4">{{ form.content.value|default:'' }}</textarea>
+                    </div>
+
+                    <div class="mb-4 form-check form-switch ps-0">
+                        <label class="form-check-label fw-bold d-block mb-2">Completion Status</label>
+                        <div class="d-flex align-items-center">
+                            <input type="checkbox" 
+                                   class="form-check-input" 
+                                   id="id_completed" 
+                                   name="completed" 
+                                   {% if form.completed.value %}checked{% endif %}>
+                            <label class="form-check-label ms-2" for="id_completed">
+                                {% if form.completed.value %}
+                                <span class="text-success">Completed</span>
+                                {% else %}
+                                <span class="text-muted">Incomplete</span>
+                                {% endif %}
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-warning btn-lg py-3">
+                            <i class="fas fa-save me-2"></i>Update Task
+                        </button>
+                        <a href="{% url 'todo_list' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times me-2"></i>Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Toggle switch label update
+document.getElementById('id_completed').addEventListener('change', function() {
+    const label = this.nextElementSibling;
+    if (this.checked) {
+        label.innerHTML = '<span class="text-success">Completed</span>';
+    } else {
+        label.innerHTML = '<span class="text-muted">Incomplete</span>';
+    }
+});
+
+// Form validation
+(function() {
+    'use strict';
+    window.addEventListener('load', function() {
+        var forms = document.getElementsByClassName('needs-validation');
+        Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    }, false);
+})();
+</script>
+{% endblock %}
